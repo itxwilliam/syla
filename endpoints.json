@@ -1,3 +1,4 @@
 {
-    "enrollments": "/d2l/api/lp/1.43/enrollments/myenrollments/"
+    "enrollments": "/d2l/api/lp/1.43/enrollments/myenrollments/",
+    "whoami": "/d2l/api/lp/1.43/users/whoami"
 }

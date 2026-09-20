@@ -13,9 +13,11 @@ def format_json(file_name : str):
     with open(file_name, "w") as f:
         json.dump(cookie_data, f, indent = 4)
 
+
 def get_endpoint(endpoint : str, file_name : str = "endpoints.json") -> str:
     with open(file_name, "r") as f:
         return json.load(f).get(endpoint, "")
+
 
 def valid_cookies(file_path : str) -> dict:
     if not os.path.exists(file_path):
@@ -31,6 +33,7 @@ def valid_cookies(file_path : str) -> dict:
         return {}
 
     return cookies
+
 
 def pretty_print(data):
     print(json.dumps(data, indent=4, sort_keys=False, default=str))
