@@ -50,19 +50,22 @@ class Course:
     
 
 class Session:
-    def __init__(self, scraped_cookies):
+    def __init__(self, scraped_cookies = None):
         self.session = requests.Session()
 
-        self.scraped_cookies = scraped_cookies
+        self.scraped_cookies = [] if not scraped_cookies else scraped_cookies 
         self.url = os.getenv("D2L_URL")
 
         self.courses = {}
 
         # intialization
-        self.set_session_cookies()
-        self.scrape_courses()
+        if self.scraped_cookies:
+            self.set_session_cookies()
 
-    def set_session_cookies(self):
+    def set_session_cookies(self, scraped_cookies = None):
+        if scraped_cookies:
+            self.scraped_cookies = scraped_cookies
+
         for cookie in self.scraped_cookies:
             cookie_name = cookie.get("name")
             cookie_value = cookie.get("value")
@@ -84,6 +87,11 @@ class Session:
         response = self._exec_request(endpoint)
         pretty_print(response.json())
         return response
+
+
+    def validate_request(self):
+        response = self._exec_request(get_endpoint("whoami"))
+        return response.status_code == 200
         
 
     def scrape_courses(self):
@@ -97,9 +105,30 @@ class Session:
             course_id = course_data.get("Id")
 
             if course_type == 3: # I think 3 gives the most relevant courses
-                self.courses[course_data.get("Id")] = course_data.get("Name")
+                self.courses[course_id] = Course(course_name, course_id, course_type)
 
-    
+        return self.courses
+
+    def get_courses(self):
+        return self.courses if self.courses else self.scrape_courses()
+
+def get_authenticated_session(cookie_file : str, login_site : str, max_attempts : int = 2) -> Session:
+    for attempt in range(max_attempts):
+        scraped_cookies = valid_cookies(cookie_file)
+
+        if scraped_cookies:
+            format_json(cookie_file)
+            client_session = Session()
+            client_session.set_session_cookies(scraped_cookies)
+
+            if client_session.validate_request():
+                return client_session
+
+        cookie_saver.save_cookie(cookie_file, login_site)
+
+    raise RuntimeError(f"Couldn't establish an authenticated session after {max_attempts} attempts")
+            
+            
 
 
 
@@ -108,12 +137,4 @@ if __name__ == "__main__":
     cookie_file = os.getenv("COOKIE_FILE_NAME")
     login_site = os.getenv("LOGIN_SITE")
 
-    scraped_cookies = valid_cookies(cookie_file)
-    if scraped_cookies:
-        format_json(cookie_file)
-        client_session = Session(scraped_cookies);
-
-    else:
-
-        print("Invalid cookies, please relogin")
-        cookie_saver.save_cookie(cookie_file,login_site)
+    client_session = get_authenticated_session(cookie_file, login_site)
