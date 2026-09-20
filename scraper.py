@@ -104,8 +104,7 @@ if __name__ == "__main__":
     if scraped_cookies:
         format_json(cookie_file)
         client_session = Session(scraped_cookies);
-        pretty_print(client_session.courses)
-    
+
     else:
 
         print("Invalid cookies, please relogin")
