@@ -41,11 +41,12 @@ def pretty_print(data):
 
 class Course:
     def __init__(self, name, id, type):
-        self.name
-        self.id
+        self.name = name
+        self.id = id
+        self.type = type
 
-        self.type
-
+    def __repr__(self):
+        return f"({self.name}, {self.id})"
     
 
 class Session:
@@ -87,10 +88,14 @@ class Session:
 
     def scrape_courses(self):
         scraped_data = self._exec_request(get_endpoint("enrollments"))
+
         for course in scraped_data.json().get("Items", []):
             course_data = course.get("OrgUnit")
 
             course_type = course_data.get("Type").get("Id")
+            course_name = course_data.get("Name")
+            course_id = course_data.get("Id")
+
             if course_type == 3: # I think 3 gives the most relevant courses
                 self.courses[course_data.get("Id")] = course_data.get("Name")
 
