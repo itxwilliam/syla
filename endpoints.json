@@ -1,4 +1,6 @@
 {
     "enrollments": "/d2l/api/lp/1.43/enrollments/myenrollments/",
-    "whoami": "/d2l/api/lp/1.43/users/whoami"
+    "whoami": "/d2l/api/lp/1.43/users/whoami",
+    "quizzes": "/d2l/api/le/1.43/{course_id}/quizzes/",
+    "dropbox_folders": "/d2l/api/le/1.43/{course_id}/dropbox/folders/"
 }

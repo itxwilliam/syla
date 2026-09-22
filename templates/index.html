@@ -2,10 +2,79 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Syla</title>
+        <title>SYLA</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     </head>
     <body>
+
+        {% import "macros.html" as macros %}
+
+        <!-- TITLE -->
+        <div class="title-container">
+            <div class="title-text">[ SYLA ]</div>
+            <div id="current-time" class="title-time"></div>
+        </div>
+
+        <div class="scrape-button-container">
+            <button class="scrape-button" id="scrape-button">SCRAPE D2L!</button>
+        </div>
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider"></div>
+
+        <!-- INFORMATION CONTAINER -->
+        <div class="info-container"> 
+            <br>
+            This project uses a D2L webscraper to help organize assignments. All data is stored locally.
+            <br>
+        </div>
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider"></div>
         
-        <script></script>
+        <!-- COURSE FILTER -->
+        <div class="course-container">
+            {% for course in courses %}
+                {{ macros.course_card(course.name, course.assignment_count, course.included) }}
+            {% endfor %}
+        </div>
+
+
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider"></div>
+
+        <!-- TASK HEADER -->
+        <div class="task-header">
+            <div>Assignment</div>
+            <div>Course</div>
+            <div></div>
+            <div>Due Date</div>
+        </div>
+
+        <!-- TASK LIST -->
+         <div class="task-list">
+            {% for task in tasks %}
+                {{ macros.task_row(task.name, task.url, task.course, task.due_date, task.due_iso, task.status, task.task_id, task.completed) }}
+            {% endfor %}
+        </div>
+        
+        <!-- SECTION DIVIDER -->
+        <div class="section-divider"></div>
+
+        
+
+        <!--  -->
+        <div class="credits-container">
+            <div class="credits-text">Made by William Huang</div>
+            
+            <div class="credits-text">
+                <a href="https://github.com/itxwilliam/syla">github</a>
+            </div>
+        </div>
+
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
 </html>

@@ -1,0 +1,19 @@
+{% macro course_card(name, count, pressed=True) %}
+<button class="course-card" type="button" aria-pressed="{{ 'true' if pressed else 'false' }}" data-course="{{ name }}">
+    <span class="course-card-name">{{ name }}</span>
+    <span class="course-card-sub">{{ count }} Assignment{{ 's' if count != 1 else '' }}</span>
+</button>
+{% endmacro %}
+
+
+{% macro task_row(assignment_name, url, course, due_date, due_iso, status='normal', task_id='', completed=False) %}
+<div class="task-row status-{{ status }}{{ ' completed' if completed else '' }}" data-course="{{ course }}" data-task-id="{{ task_id }}" data-due="{{ due_iso }}">
+    <div class="task-cell-assignment"><a href="{{ url }}" title="{{ assignment_name }}">{{ assignment_name }}</a></div>
+    <div class="task-cell-course">{{ course }}</div>
+    <div></div>
+    <div class="task-cell-due">Due {{ due_date }}</div>
+    <div class="task-cell-complete">
+        <input type="checkbox" class="task-checkbox" {{ 'checked' if completed else '' }} aria-label="Mark {{ assignment_name }} complete">
+    </div>
+</div>
+{% endmacro %}
