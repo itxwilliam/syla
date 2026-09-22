@@ -1,7 +1,7 @@
 {% macro course_card(name, count, pressed=True) %}
 <button class="course-card" type="button" aria-pressed="{{ 'true' if pressed else 'false' }}" data-course="{{ name }}">
     <span class="course-card-name">{{ name }}</span>
-    <span class="course-card-sub">{{ count }} Assignment{{ 's' if count != 1 else '' }}</span>
+    <span class="course-card-sub" data-remaining="{{ count }}">{{ count }} Assignment{{ 's' if count != 1 else '' }}</span>
 </button>
 {% endmacro %}
 

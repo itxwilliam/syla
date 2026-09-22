@@ -52,13 +52,28 @@ function applyCompletionOrder() {
     rows.forEach(row => taskList.appendChild(row));
 }
 
+function updateCourseCardCount(courseName, delta) {
+    const card = [...document.querySelectorAll(".course-card")]
+        .find(c => c.dataset.course === courseName);
+    if (!card) return;
+
+    const sub = card.querySelector(".course-card-sub");
+    if (!sub) return;
+
+    const newCount = Math.max(0, parseInt(sub.dataset.remaining, 10) + delta);
+    sub.dataset.remaining = newCount;
+    sub.textContent = `${newCount} Assignment${newCount !== 1 ? "s" : ""}`;
+}
+
 document.querySelectorAll(".task-checkbox").forEach(checkbox => {
     checkbox.addEventListener("change", () => {
         const row = checkbox.closest(".task-row");
         const taskId = row.dataset.taskId;
         const isComplete = checkbox.checked;
+        const courseName = row.dataset.course;
 
         row.classList.toggle("completed", isComplete); // optimistic UI update
+        updateCourseCardCount(courseName, isComplete ? -1 : 1);
         applyCompletionOrder();
 
         fetch("/complete", {
@@ -73,6 +88,7 @@ document.querySelectorAll(".task-checkbox").forEach(checkbox => {
                 console.error("Failed to save completion state:", error);
                 checkbox.checked = !isComplete;
                 row.classList.toggle("completed", !isComplete);
+                updateCourseCardCount(courseName, isComplete ? 1 : -1); // revert on failure
                 applyCompletionOrder();
             });
     });

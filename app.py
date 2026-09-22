@@ -66,11 +66,16 @@ def build_course_and_task_data(session):
     completed = load_completed()
 
     for course in session.courses.values():
-        assignment_count = len(course.get_quizzes()) + len(course.get_dropboxes())
+        quiz_ids = [f"quiz-{q.id}" for q in course.get_quizzes().values()]
+        dropbox_ids = [f"dropbox-{d.id}" for d in course.get_dropboxes().values()]
+        all_ids = quiz_ids + dropbox_ids
+
+        remaining_count = sum(1 for task_id in all_ids if task_id not in completed)
+
         courses.append({
             "name": course.name,
-            "assignment_count": assignment_count,
-            "included": True
+            "assignment_count": remaining_count,
+            "included": True,
         })
 
         for quiz in course.get_quizzes().values():
