@@ -39,11 +39,63 @@ def pretty_print(data):
     print(json.dumps(data, indent=4, sort_keys=False, default=str))
 
 
+#=========#
+# CLASSES #
+#=========#
+
+class Quiz:
+    def __init__(self, name, id, start, due, end):
+        self.name = name
+        self.id = id
+
+        self.start = start
+        self.due = due
+        self.end = end
+
+    def __repr__(self):
+        return f"({self.name}, {self.id})"
+
+class Dropbox:
+    def __init__(self, name, id, due):
+        self.name = name
+        self.id = id
+
+        self.due = due
+
+    def __repr__(self):
+        return f"({self.name}, {self.id})"
+
 class Course:
     def __init__(self, name, id, type):
         self.name = name
         self.id = id
         self.type = type
+
+        #access
+        self.start = start
+        self.end = end
+
+        # populated by sessions scrape methods
+        self.quizzes = {}
+        self.dropboxes = {}
+
+    def add_quiz(self, quiz:Quiz):
+        self.quizzes[quiz.id] = quiz
+
+    def get_quizzes(self) -> dict:
+        return self.quizzes
+
+    def get_quiz(self, quiz_id) -> Quiz:
+        return self.quizzes.get(quiz_id)
+
+    def add_dropbox(self, dropbox:Dropbox):
+        self.dropboxes[dropbox.id] = dropbox
+
+    def get_dropboxes(self) -> dict:
+        return self.dropboxes
+
+    def get_dropbox(self, dropbox_id) -> Dropbox:
+        return self.dropboxes.get(dropbox_id)
 
     def __repr__(self):
         return f"({self.name}, {self.id})"
